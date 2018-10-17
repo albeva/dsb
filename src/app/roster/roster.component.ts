@@ -6,19 +6,9 @@ import { RankService } from '../services/rank.service';
 import { MemberService } from '../services/member.service';
 import { SortDescriptor, orderBy } from '@progress/kendo-data-query';
 import { GridDataResult, PageChangeEvent, GridComponent  } from '@progress/kendo-angular-grid';
-import { FormGroup, FormControl, Validators } from '@angular/forms';
+import { FormGroup, FormControl, Validators, AbstractControl } from '@angular/forms';
 
 // Form for editing the row
-const createFormGroup = dataItem => new FormGroup({
-    'id': new FormControl(dataItem.id),
-    'character': new FormControl(dataItem.character, Validators.required),
-    'legacy': new FormControl(dataItem.legacy),
-    'website': new FormControl(dataItem.website),
-    'discordId': new FormControl(dataItem.discordId),
-    'rankId': new FormControl(dataItem.rankId, Validators.required),
-    'joined': new FormControl(dataItem.joined, Validators.required),
-    'notes':  new FormControl(dataItem.notes)
-});
 
 const matches = (el, selector) => (el.matches || el.msMatchesSelector).call(el, selector);
 
@@ -42,6 +32,7 @@ export class RosterComponent implements OnInit, OnDestroy {
     ranks: Rank[] = [];
     isNew: boolean;
     formGroup: FormGroup;
+    activeMembers = true;
 
     @ViewChild(GridComponent)
     private grid: GridComponent;
@@ -90,11 +81,64 @@ export class RosterComponent implements OnInit, OnDestroy {
         }
     }
 
+    // ----- show active / inactive members
+
+    toggleActiveMembers() {
+        this.closeEditor();
+        this.activeMembers = !this.activeMembers;
+        this.skip = 0;
+        this.members = this.sort(this.filter(this.allMembers));
+        this.loadItems();
+    }
+
+    quitGuildHandler() {
+        const index = this.editedRowIndex;
+        this.closeEditor();
+        const member = this.members[index];
+        if (confirm(`Member '${member.character}' quit the guild?`)) {
+            member.left = true;
+            this.memberService.save(member);
+        }
+    }
+
+    rejoinGuildHandler() {
+        const index = this.editedRowIndex;
+        this.closeEditor();
+        const member = this.members[index];
+        if (confirm(`Member '${member.character}' rejoined the guild?`)) {
+            member.left = false;
+            this.memberService.save(member);
+        }
+    }
+
     // ----- Editing
+
+    createFormGroup(dataItem: Member|any) {
+        return new FormGroup({
+            'id': new FormControl(dataItem.id),
+            'character': new FormControl(dataItem.character, [Validators.required, (control: AbstractControl) => {
+                const value = (control.value || '').toLowerCase();
+                const id = dataItem.id;
+
+                if (this.allMembers.find(member => member.character.toLowerCase() === value && member.id !== id)) {
+                    return {
+                        'custom': 'Member with this character already exists'
+                    };
+                }
+                return null;
+            }]),
+            'legacy': new FormControl(dataItem.legacy),
+            'website': new FormControl(dataItem.website),
+            'discordId': new FormControl(dataItem.discordId),
+            'rankId': new FormControl(dataItem.rankId, Validators.required),
+            'joined': new FormControl(dataItem.joined, Validators.required),
+            'notes':  new FormControl(dataItem.notes)
+        });
+    }
 
     addNewMemberHandler() {
         this.isNew = true;
-        this.formGroup = createFormGroup({
+        this.formGroup = this.createFormGroup({
             rankId: this.ranks[0].id,
             joined: new Date()
         });
@@ -127,7 +171,7 @@ export class RosterComponent implements OnInit, OnDestroy {
 
         this.closeEditor();
 
-        this.formGroup = createFormGroup(dataItem);
+        this.formGroup = this.createFormGroup(dataItem);
         this.editedRowIndex = rowIndex;
         this.grid.editRow(rowIndex, this.formGroup);
 
@@ -197,10 +241,15 @@ export class RosterComponent implements OnInit, OnDestroy {
 
     private filter(members: Member[]): Member[] {
         const s = this.search.trim().toLowerCase();
-        if (s.length === 0) {
-            return members;
-        }
         return members.filter(member => {
+            if (this.activeMembers && member.left === true) {
+                return false;
+            } else if (!this.activeMembers && member.left !== true) {
+                return false;
+            }
+            if (s.length === 0) {
+                return true;
+            }
             return member.character.toLowerCase().indexOf(s) !== -1
                 || member.legacy.toLowerCase().indexOf(s) !== -1
                 || member.rank.name.toLowerCase().indexOf(s) !== -1

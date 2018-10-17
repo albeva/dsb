@@ -26,7 +26,7 @@
     >
     <ng-template kendoGridToolbarTemplate>
         <button kendoGridAddCommand
-            *ngIf="!formGroup"
+            *ngIf="!formGroup && activeMembers"
             [icon]="'plus'"
             [hidden]="isNew" >Add member</button>
         <button kendoButton
@@ -43,6 +43,26 @@
             *ngIf="formGroup && !isNew"
             [icon]="'delete'"
             (click)="deleteHandler()">Delete</button>
+        <button kendoButton
+            *ngIf="formGroup && !isNew && activeMembers"
+            [icon]="'logout'"
+            (click)="quitGuildHandler()">Left the guild</button>
+        <button kendoButton
+            *ngIf="formGroup && !isNew && !activeMembers"
+            [icon]="'login'"
+            (click)="rejoinGuildHandler()">Rejoined the guild</button>
+        <kendo-buttongroup
+            [selection]="'single'"
+            style="float: right;"
+            look="bare">
+            <button kendoButton
+                [toggleable]="true"
+                [selected]="activeMembers">Active members</button>
+            <button kendoButton
+                [toggleable]="true"
+                [selected]="!activeMembers"
+                (selectedChange)="toggleActiveMembers()">Former members</button>
+        </kendo-buttongroup>
     </ng-template>
     <kendo-grid-column
         title="Character"

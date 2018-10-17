@@ -7,6 +7,9 @@ export interface Member {
     // entry id
     id?: string;
 
+    // has left the guild?
+    left: boolean;
+
     // character name in game
     character: string;
 
@@ -27,9 +30,6 @@ export interface Member {
 
     // guild join date
     joined: Date;
-
-    // left guild date
-    left?: Date;
 
     // comments
     notes?: string;
