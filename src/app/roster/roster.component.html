@@ -1,0 +1,101 @@
+<h1>Guild roster</h1>
+<div class="form-group">
+    <input
+        type="search"
+        class="form-control"
+        placeholder="Filter"
+        #filter
+        (input)="filterChanged(filter.value)">
+</div>
+<kendo-grid
+    id="membersGrid"
+    [data]="gridView"
+    scrollable="none"
+    [sortable]="{
+        allowUnsort: true,
+        mode: 'multiple'
+    }"
+    [sort]="sortDesc"
+    (sortChange)="sortChange($event)"
+    [pageable]="true"
+    [pageSize]="pageSize"
+    [skip]="skip"
+    (pageChange)="pageChange($event)"
+    (cellClick)="cellClickHandler($event)"
+    (add)="addNewMemberHandler()"
+    >
+    <ng-template kendoGridToolbarTemplate>
+        <button kendoGridAddCommand
+            *ngIf="!formGroup"
+            [icon]="'plus'"
+            [hidden]="isNew" >Add member</button>
+        <button kendoButton
+            *ngIf="formGroup"
+            [icon]="'save'"
+            [primary]="!formGroup?.pristine"
+            [disabled]="formGroup?.invalid || formGroup?.pristine"
+            (click)="saveHandler()">{{ isNew ? 'Add' : 'Update' }}</button>
+        <button kendoButton
+            *ngIf="formGroup"
+            [icon]="'cancel'"
+            (click)="cancelHandler()">Cancel</button>
+        <button kendoButton
+            *ngIf="formGroup && !isNew"
+            [icon]="'delete'"
+            (click)="deleteHandler()">Delete</button>
+    </ng-template>
+    <kendo-grid-column
+        title="Character"
+        field="character"
+        width="130"></kendo-grid-column>
+    <kendo-grid-column
+        title="Legacy"
+        field="legacy"
+        width="130"></kendo-grid-column>
+    <kendo-grid-column
+        title="Website"
+        field="website"
+        width="120"></kendo-grid-column>
+    <kendo-grid-column
+        title="Discord"
+        field="discordId"
+        width="220"></kendo-grid-column>
+    <kendo-grid-column
+        title="Rank"
+        field="rank.name"
+        width="160">
+        <ng-template kendoGridCellTemplate let-dataItem>
+            <span class="rank-label" [style.color]="dataItem.rank.color">{{ dataItem.rank.name }}</span>
+        </ng-template>
+        <ng-template kendoGridEditTemplate
+            let-dataItem="dataItem"
+            let-formGroup="formGroup">
+            <kendo-dropdownlist
+                [data]="ranks"
+                textField="name"
+                valueField="id"
+                [valuePrimitive]="true"
+                [formControl]="formGroup.get('rankId')">
+              </kendo-dropdownlist>
+        </ng-template>
+    </kendo-grid-column>
+    <kendo-grid-column
+        title="Joined"
+        field="joined"
+        [width]="120">
+        <ng-template kendoGridCellTemplate let-dataItem>
+            <span title="{{ dataItem.joined | date }}">{{ dataItem.joined | date: 'MMM yyyy' }}</span>
+        </ng-template>
+        <ng-template kendoGridEditTemplate
+            let-dataItem="dataItem"
+            let-formGroup="formGroup">
+            <kendo-datepicker
+                [format]="'MMM yyyy'"
+                [formControl]="formGroup.get('joined')"
+            ></kendo-datepicker>
+        </ng-template>
+    </kendo-grid-column>
+    <kendo-grid-column
+        title="Notes"
+        field="notes"></kendo-grid-column>
+</kendo-grid>

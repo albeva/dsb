@@ -1,0 +1,9 @@
+/* You can add global styles to this file, and also import other style files */
+#membersGrid tbody tr td {
+    height:38px;
+    cursor: pointer;
+}
+#membersGrid .rank-label {
+    font-weight: bold;
+}
+
