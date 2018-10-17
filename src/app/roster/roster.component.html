@@ -40,7 +40,7 @@
             [icon]="'cancel'"
             (click)="cancelHandler()">Cancel</button>
         <button kendoButton
-            *ngIf="formGroup && !isNew"
+            *ngIf="formGroup && !isNew && !activeMembers"
             [icon]="'delete'"
             (click)="deleteHandler()">Delete</button>
         <button kendoButton

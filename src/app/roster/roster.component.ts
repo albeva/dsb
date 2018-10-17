@@ -251,7 +251,7 @@ export class RosterComponent implements OnInit, OnDestroy {
                 return true;
             }
             return member.character.toLowerCase().indexOf(s) !== -1
-                || member.legacy.toLowerCase().indexOf(s) !== -1
+                || (member.legacy && member.legacy.toLowerCase().indexOf(s) !== -1)
                 || member.rank.name.toLowerCase().indexOf(s) !== -1
                 || (member.notes && member.notes.toLowerCase().indexOf(s) !== -1);
         });
