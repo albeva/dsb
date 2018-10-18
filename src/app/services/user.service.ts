@@ -19,10 +19,15 @@ export class UserService {
 
     constructor(private afAuth: AngularFireAuth, private afs: AngularFirestore, private router: Router) {
         this.user = this.afAuth.authState.pipe(switchMap(user => {
-            if (user) {
-                return this.afs.doc<User>(`users/${user.uid}`).valueChanges();
+            if (!user) {
+                return of(null);
             }
-            return of(null);
+            return this.afs.doc<User>(`users/${user.uid}`).valueChanges().pipe(map(u => {
+                if (!u) {
+                    return {admin: false};
+                }
+                return u;
+            }));
         }));
 
         this.isAdmin = this.user.pipe(map(user => {

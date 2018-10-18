@@ -7,6 +7,8 @@ import { MemberService } from '../services/member.service';
 import { SortDescriptor, orderBy } from '@progress/kendo-data-query';
 import { GridDataResult, PageChangeEvent, GridComponent  } from '@progress/kendo-angular-grid';
 import { FormGroup, FormControl, Validators, AbstractControl } from '@angular/forms';
+import { UserService } from '../services/user.service';
+import { Router } from '@angular/router';
 
 // Form for editing the row
 
@@ -45,8 +47,16 @@ export class RosterComponent implements OnInit, OnDestroy {
 
     private editedRowIndex: number;
     private docClickSubscription: any;
+    private isAdminSubscription: any;
 
-    constructor(private memberService: MemberService, private rankService: RankService, private renderer: Renderer2) {
+    constructor(private memberService: MemberService, private rankService: RankService,
+                private renderer: Renderer2, private userService: UserService,
+                private router: Router) {
+        this.isAdminSubscription = userService.isAdmin.subscribe(isAdmin => {
+            if (!isAdmin) {
+                window.location.reload(true);
+            }
+        });
         this.rankSubscription = rankService.ranks.subscribe(ranks => {
             this.ranks = ranks;
             this.updateRanks();
@@ -78,6 +88,11 @@ export class RosterComponent implements OnInit, OnDestroy {
         if (this.docClickSubscription) {
             this.docClickSubscription.unsubscribe();
             this.docClickSubscription = null;
+        }
+
+        if (this.isAdminSubscription) {
+            this.isAdminSubscription.unsubscribe();
+            this.isAdminSubscription = null;
         }
     }
 
