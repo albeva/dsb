@@ -1,48 +1,63 @@
 import { BrowserModule } from '@angular/platform-browser';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
-
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { NgModule } from '@angular/core';
-import { environment } from '../environments/environment';
 
 import { AngularFireModule } from '@angular/fire';
 import { AngularFirestoreModule } from '@angular/fire/firestore';
+import { AngularFireAuthModule } from '@angular/fire/auth';
 
-import { PapaParseModule } from 'ngx-papaparse';
 import { GridModule } from '@progress/kendo-angular-grid';
 import { DropDownsModule } from '@progress/kendo-angular-dropdowns';
 import { InputsModule } from '@progress/kendo-angular-inputs';
-import {FormsModule, ReactiveFormsModule} from '@angular/forms';
+import { DateInputsModule } from '@progress/kendo-angular-dateinputs';
+import { ButtonsModule } from '@progress/kendo-angular-buttons';
 
-import { AppComponent } from './app.component';
-import { RosterComponent } from './roster/roster.component';
+import { environment } from '../environments/environment';
 
 import { RankService } from './services/rank.service';
 import { MemberService } from './services/member.service';
-import { DateInputsModule } from '@progress/kendo-angular-dateinputs';
-import { ButtonsModule } from '@progress/kendo-angular-buttons';
+import { UserService } from './services/user.service';
+
+import { AppComponent } from './app.component';
+import { RosterComponent } from './roster/roster.component';
+import { LoginComponent } from './login/login.component';
+import { AppRoutingModule } from './app-routing.module';
+import { AccessDeniedComponent } from './access-denied/access-denied.component';
+
+import { AuthGuard } from './guards/auth.guard';
+
 
 @NgModule({
     declarations: [
         AppComponent,
-        RosterComponent
+        RosterComponent,
+        LoginComponent,
+        AccessDeniedComponent
     ],
     imports: [
         BrowserModule,
-        AngularFireModule.initializeApp(environment.firebase),
-        AngularFirestoreModule,
-        PapaParseModule,
-        GridModule,
         BrowserAnimationsModule,
-        DropDownsModule,
-        InputsModule,
         FormsModule,
         ReactiveFormsModule,
+
+        AngularFireModule.initializeApp(environment.firebase),
+        AngularFirestoreModule,
+        AngularFireAuthModule,
+
+        GridModule,
+        DropDownsModule,
+        InputsModule,
         DateInputsModule,
-        ButtonsModule
+        ButtonsModule,
+
+        AppRoutingModule
     ],
     providers: [
         RankService,
-        MemberService
+        MemberService,
+        UserService,
+        AuthGuard
     ],
     bootstrap: [AppComponent]
 })
