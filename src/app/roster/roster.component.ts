@@ -268,7 +268,9 @@ export class RosterComponent implements OnInit, OnDestroy {
             return member.character.toLowerCase().indexOf(s) !== -1
                 || (member.legacy && member.legacy.toLowerCase().indexOf(s) !== -1)
                 || member.rank.name.toLowerCase().indexOf(s) !== -1
-                || (member.notes && member.notes.toLowerCase().indexOf(s) !== -1);
+                || (member.notes && member.notes.toLowerCase().indexOf(s) !== -1)
+                || (member.discordId && member.discordId.toLowerCase().indexOf(s) !== -1)
+                || (member.website && member.website.toLowerCase().indexOf(s) !== -1);
         });
     }
 
