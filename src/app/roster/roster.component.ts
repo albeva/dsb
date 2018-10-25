@@ -112,6 +112,7 @@ export class RosterComponent implements OnInit, OnDestroy {
         const member = this.members[index];
         if (confirm(`Member '${member.character}' quit the guild?`)) {
             member.left = true;
+            member.leftDate = new Date();
             this.memberService.save(member);
         }
     }
@@ -122,6 +123,7 @@ export class RosterComponent implements OnInit, OnDestroy {
         const member = this.members[index];
         if (confirm(`Member '${member.character}' rejoined the guild?`)) {
             member.left = false;
+            member.leftDate = null;
             this.memberService.save(member);
         }
     }
@@ -147,6 +149,7 @@ export class RosterComponent implements OnInit, OnDestroy {
             'discordId': new FormControl(dataItem.discordId),
             'rankId': new FormControl(dataItem.rankId, Validators.required),
             'joined': new FormControl(dataItem.joined, Validators.required),
+            'leftDate': new FormControl(dataItem.leftDate),
             'notes':  new FormControl(dataItem.notes)
         });
     }

@@ -10,6 +10,9 @@ export interface Member {
     // has left the guild?
     left: boolean;
 
+    // Approximate date when member left the guild
+    leftDate?: Date;
+
     // character name in game
     character: string;
 

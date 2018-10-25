@@ -23,6 +23,10 @@ export class MemberService {
                     const id = a.payload.doc.id;
                     const joinedTimestamp = <firestore.Timestamp><any>data.joined;
                     data.joined = joinedTimestamp.toDate();
+                    if (data.leftDate) {
+                        const leftDate = <firestore.Timestamp><any>data.leftDate;
+                        data.leftDate = leftDate.toDate();
+                    }
                     return {id, ...data};
                 });
                 return members.sort((a, b) => {
@@ -37,10 +41,17 @@ export class MemberService {
     save(member: Member) {
         const copy = <any>Object.assign({}, member);
         copy.joined = firestore.Timestamp.fromDate(copy.joined);
-        const id = member.id || this.db.createId();
+        if (copy.leftDate) {
+            copy.leftDate = firestore.Timestamp.fromDate(copy.leftDate);
+        }
         delete copy.id;
         delete copy.rank;
-        this.membersCollection.doc(id).set(copy);
+        if (member.id) {
+            this.membersCollection.doc(member.id).update(copy);
+        } else {
+            const id = this.db.createId();
+            this.membersCollection.doc(id).set(copy);
+        }
     }
 
     delete(member: Member) {
