@@ -86,7 +86,7 @@ export class RosterComponent implements OnInit, OnDestroy {
         }
 
         if (this.docClickSubscription) {
-            this.docClickSubscription.unsubscribe();
+            this.docClickSubscription();
             this.docClickSubscription = null;
         }
 

@@ -3,8 +3,7 @@ import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 import {
     AngularFirestore,
-    AngularFirestoreCollection,
-    AngularFirestoreDocument
+    AngularFirestoreCollection
 } from '@angular/fire/firestore';
 import { Rank } from '../models/Rank';
 

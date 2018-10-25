@@ -1,11 +1,18 @@
-<nav *ngIf="userService.isAdmin | async" class="navbar navbar-light bg-light">
+<nav class="navbar navbar-expand-lg navbar-light bg-light">
     <div class="container">
-        <div class="navbar-nav">
-            <a class="nav-item nav-link" routerLink="/roster" routerLinkActive="active">Roster</a>
-        </div>
-        <div class="navbar-nav">
-            <a class="nav-item nav-link" (click)="userService.logout()" href="#">Logout</a>
-        </div>
+        <ul class="navbar-nav">
+            <li class="nav-item">
+                <a class="nav-link" routerLink="/roster" routerLinkActive="active">Roster</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" routerLink="/messages" routerLinkActive="active">Messages</a>
+            </li>
+        </ul>
+        <ul class="navbar-nav">
+            <li class="nav-item">
+                <a class="nav-item nav-link" (click)="userService.logout()" href="#">Logout</a>
+            </li>
+        </ul>
     </div>
 </nav>
 <div class="container">

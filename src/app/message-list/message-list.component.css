@@ -1,0 +1,3 @@
+.modal-header button:focus {
+    outline: none!important;
+}
