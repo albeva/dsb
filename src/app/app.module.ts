@@ -8,7 +8,7 @@ import { AngularFireModule } from '@angular/fire';
 import { AngularFirestoreModule } from '@angular/fire/firestore';
 import { AngularFireAuthModule } from '@angular/fire/auth';
 // Bootstrap
-import { NgbModalModule } from '@ng-bootstrap/ng-bootstrap';
+import { NgbModalModule, NgbAccordionModule } from '@ng-bootstrap/ng-bootstrap';
 // Kendo
 import { GridModule } from '@progress/kendo-angular-grid';
 import { DropDownsModule } from '@progress/kendo-angular-dropdowns';
@@ -61,6 +61,7 @@ import { AuthGuard } from './guards/auth.guard';
         ButtonsModule,
         // bootstrap
         NgbModalModule,
+        NgbAccordionModule,
         // app stuff
         AppRoutingModule
     ],

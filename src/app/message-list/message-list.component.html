@@ -1,10 +1,19 @@
-<div *ngFor="let message of messageService.messages | async">
-    <app-message
-    [message]="message"
-    (edit)="onEdit(content, $event)"
-    (delete)="onDelete($event)"
-    ></app-message>
+<div class="messages">
+    <ngb-accordion #acc="ngbAccordion">
+        <ngb-panel *ngFor="let message of messageService.messages | async"
+                   title="{{ message.title }}"
+                   [id]="message.id">
+            <ng-template ngbPanelContent>
+                <app-message
+                [message]="message"
+                (edit)="onEdit(content, $event)"
+                (delete)="onDelete($event)"
+                ></app-message>
+            </ng-template>
+        </ngb-panel>
+    </ngb-accordion>
 </div>
+
 <button style="margin-top: 10px;" class="btn btn-primary" (click)="onNew(content)"><i class="fas fa-plus"></i> Add new</button>
 
 <ng-template #content let-modal>
@@ -20,12 +29,12 @@
                 <label for="messageTitle" class="col-sm-1 col-form-label">Title</label>
                 <div class="col-sm-11">
                     <input
-                        type="text"
-                        class="form-control"
-                        [ngClass]="{'is-invalid': title.touched && title.errors}"
-                        id="messageTitle"
-                        formControlName="title"
-                        placeholder="Message title">
+                    type="text"
+                    class="form-control"
+                    [ngClass]="{'is-invalid': title.touched && title.errors}"
+                    id="messageTitle"
+                    formControlName="title"
+                    placeholder="Message title">
                     <div *ngIf="title.touched && title.errors" class="invalid-feedback">
                         <div *ngIf="title.errors.required">First Name is required</div>
                     </div>
@@ -35,13 +44,13 @@
                 <label for="messageText" class="col-sm-1 col-form-label">Text</label>
                 <div class="col-sm-11">
                     <textarea
-                        rows="4"
-                        type="password"
-                        class="form-control"
-                        [ngClass]="{'is-invalid': text.touched && text.errors}"
-                        id="messageText"
-                        formControlName="text"
-                        placeholder="Text ..."></textarea>
+                    rows="4"
+                    type="password"
+                    class="form-control"
+                    [ngClass]="{'is-invalid': text.touched && text.errors}"
+                    id="messageText"
+                    formControlName="text"
+                    placeholder="Text ..."></textarea>
                     <div *ngIf="text.touched && text.errors" class="invalid-feedback">
                         <div *ngIf="text.errors.required">First Name is required</div>
                     </div>

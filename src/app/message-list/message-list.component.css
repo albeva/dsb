@@ -1,3 +1,6 @@
+:host .messages {
+    margin-top: 15px;
+}
 .modal-header button:focus {
     outline: none!important;
 }

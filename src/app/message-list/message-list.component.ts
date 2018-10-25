@@ -1,8 +1,8 @@
-import { Component, OnInit } from '@angular/core';
+import { Component } from '@angular/core';
 import { MessageService } from '../services/message.service';
 import { Message } from '../models/Message';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
-import { NgbModal, ModalDismissReasons, NgbModalOptions } from '@ng-bootstrap/ng-bootstrap';
+import { NgbModal, NgbModalOptions, NgbAccordion } from '@ng-bootstrap/ng-bootstrap';
 
 @Component({
     selector: 'app-message-list',
@@ -14,6 +14,8 @@ export class MessageListComponent {
     editMessage?: Message;
     addNew: boolean;
     formGroup: FormGroup;
+
+
 
     constructor(public messageService: MessageService, private modalService: NgbModal) {}
 
@@ -57,8 +59,7 @@ export class MessageListComponent {
             if (this.formGroup && this.formGroup.valid) {
                 this.messageService.save(this.formGroup.value);
             }
-        }, (reason) => {
-        });
+        }, () => {});
     }
 
     onDelete(message: Message) {
