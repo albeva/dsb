@@ -42,7 +42,7 @@
                         id="messageText"
                         formControlName="text"
                         placeholder="Text ..."></textarea>
-                    <div *ngIf="title.touched && title.errors" class="invalid-feedback">
+                    <div *ngIf="text.touched && text.errors" class="invalid-feedback">
                         <div *ngIf="text.errors.required">First Name is required</div>
                     </div>
                 </div>
