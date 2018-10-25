@@ -1,6 +1,9 @@
-.card {
+:host .card {
     margin-top: 15px;
 }
-button + button {
+:host button + button {
     margin-left: 10px;
+}
+:host .card-text {
+    white-space: pre-wrap;
 }
