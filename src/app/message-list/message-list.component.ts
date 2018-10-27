@@ -1,8 +1,8 @@
-import { Component, ViewChild } from '@angular/core';
+import { Component } from '@angular/core';
 import { MessageService } from '../services/message.service';
 import { Message } from '../models/Message';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
-import { NgbModal, NgbModalOptions, NgbAccordion, NgbPanelChangeEvent } from '@ng-bootstrap/ng-bootstrap';
+import { NgbModal, NgbModalOptions, NgbPanelChangeEvent } from '@ng-bootstrap/ng-bootstrap';
 
 @Component({
     selector: 'app-message-list',
@@ -11,7 +11,6 @@ import { NgbModal, NgbModalOptions, NgbAccordion, NgbPanelChangeEvent } from '@n
 })
 export class MessageListComponent {
 
-    @ViewChild(NgbAccordion) accordian: NgbAccordion;
     addNew: boolean;
     formGroup: FormGroup;
     activeIds: string[];
@@ -24,6 +23,8 @@ export class MessageListComponent {
             this.activeIds = [];
         }
     }
+
+    // UI state handling
 
     panelChange(event: NgbPanelChangeEvent) {
         if (event.nextState) {
@@ -48,6 +49,8 @@ export class MessageListComponent {
         localStorage.setItem('MessageListComponent.activeIds', json);
     }
 
+    // edit / new form
+
     createFormGroup(msg: Message|any) {
         return new FormGroup({
             'id': new FormControl(msg.id),
@@ -63,6 +66,8 @@ export class MessageListComponent {
     get text(): any {
         return this.formGroup.controls.text;
     }
+
+    // handle new / edit
 
     onNew(content) {
         this.addNew = true;
