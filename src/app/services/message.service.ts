@@ -27,11 +27,12 @@ export class MessageService {
     }
 
 
-    save(message: Message) {
+    save(message: Message): string {
         const copy = <any>Object.assign({}, message);
         const id = message.id || this.afs.createId();
         delete copy.id;
         this.messageCollection.doc(id).set(copy);
+        return id;
     }
 
     delete(message: Message) {

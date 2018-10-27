@@ -1,5 +1,9 @@
 <div class="messages">
-    <ngb-accordion #acc="ngbAccordion">
+    <ngb-accordion
+    #acc="ngbAccordion"
+    [activeIds]="activeIds"
+    (panelChange)="panelChange($event)"
+    >
         <ngb-panel *ngFor="let message of messageService.messages | async"
                    title="{{ message.title }}"
                    [id]="message.id">
@@ -36,7 +40,7 @@
                     formControlName="title"
                     placeholder="Message title">
                     <div *ngIf="title.touched && title.errors" class="invalid-feedback">
-                        <div *ngIf="title.errors.required">First Name is required</div>
+                        <div *ngIf="title.errors.required">Title is required</div>
                     </div>
                 </div>
             </div>
@@ -52,7 +56,7 @@
                     formControlName="text"
                     placeholder="Text ..."></textarea>
                     <div *ngIf="text.touched && text.errors" class="invalid-feedback">
-                        <div *ngIf="text.errors.required">First Name is required</div>
+                        <div *ngIf="text.errors.required">Text is required</div>
                     </div>
                 </div>
             </div>
