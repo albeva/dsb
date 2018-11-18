@@ -20,7 +20,10 @@
         <tr *ngFor="let pm of members">
             <td>{{ pm.member.character }}</td>
             <td>{{ pm.member.legacy }}</td>
-            <td>{{ pm.member.discordId }}</td>
+            <td>
+                <span *ngIf="pm.member.discordId">{{ pm.member.discordId }}</span>
+                <i *ngIf="!pm.member.discordId && pm.error=='discordId'" style="color: red;">Discord required</i>
+            </td>
             <td class="rank-label" [style.color]="pm.member.rank.color">{{ pm.member.rank.name }}</td>
             <td title="{{ pm.lastChange | date }}">{{ pm.daysActive }}</td>
             <td><button *ngIf="pm.promoteTo"
@@ -29,12 +32,12 @@
                     class="btn btn-sm btn-light"
                     (click)="promote(pm)"
                 ><i class="fas fa-plus"></i> {{ pm.promoteTo.name }}</button>
-                <button *ngIf="!pm.promoteTo"
+                <button *ngIf="pm.hidePeriod"
                     type="button"
                     class="btn btn-sm btn-outline-secondary"
-                    title="Hide for {{ pm.period }} days"
+                    title="Hide for {{ pm.hidePeriod }} days"
                     (click)="hide(pm)"
-                ><i class="fas fa-eye-slash"></i>    Hide</button>
+                ><i class="fas fa-eye-slash"></i> Hide</button>
             </td>
             <td><button *ngIf="pm.demoteTo"
                     type="button"

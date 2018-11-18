@@ -8,7 +8,6 @@ import { SortDescriptor, orderBy } from '@progress/kendo-data-query';
 import { GridDataResult, PageChangeEvent, GridComponent  } from '@progress/kendo-angular-grid';
 import { FormGroup, FormControl, Validators, AbstractControl } from '@angular/forms';
 import { UserService } from '../services/user.service';
-import { Router } from '@angular/router';
 
 // Form for editing the row
 
@@ -47,15 +46,9 @@ export class RosterComponent implements OnInit, OnDestroy {
 
     private editedRowIndex: number;
     private docClickSubscription: any;
-    private isAdminSubscription: any;
 
     constructor(private memberService: MemberService, rankService: RankService,
                 private renderer: Renderer2, userService: UserService) {
-        this.isAdminSubscription = userService.isAdmin.subscribe(isAdmin => {
-            if (!isAdmin) {
-                window.location.reload(true);
-            }
-        });
         this.rankSubscription = rankService.ranks.subscribe(ranks => {
             this.ranks = ranks;
             this.updateRanks();
@@ -87,11 +80,6 @@ export class RosterComponent implements OnInit, OnDestroy {
         if (this.docClickSubscription) {
             this.docClickSubscription();
             this.docClickSubscription = null;
-        }
-
-        if (this.isAdminSubscription) {
-            this.isAdminSubscription.unsubscribe();
-            this.isAdminSubscription = null;
         }
     }
 
@@ -210,6 +198,21 @@ export class RosterComponent implements OnInit, OnDestroy {
                 values.rankUpdated = new Date();
             }
             delete values.originalRankId;
+            if (values.character) {
+                values.character = values.character.trim();
+            }
+            if (values.legacy) {
+                values.legacy = values.legacy.trim();
+            }
+            if (values.website) {
+                values.website = values.website.trim();
+            }
+            if (values.discordId) {
+                values.discordId = values.discordId.trim();
+            }
+            if (values.notes) {
+                values.notes = values.notes.trim();
+            }
             this.memberService.save(values);
         }
         this.closeEditor();

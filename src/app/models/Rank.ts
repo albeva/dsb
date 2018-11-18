@@ -8,4 +8,5 @@ export interface Rank {
     promoteAfter?: number;
     demoteAfter?: number;
     index?: number;
+    require?: string;
 }

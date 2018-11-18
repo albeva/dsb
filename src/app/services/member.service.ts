@@ -27,9 +27,9 @@ export class MemberService {
                         const leftDate = <firestore.Timestamp><any>data.leftDate;
                         data.leftDate = leftDate.toDate();
                     }
-                    if (data.rankChanged) {
-                        const rankChanged = <firestore.Timestamp><any>data.rankChanged;
-                        data.rankChanged = rankChanged.toDate();
+                    if (data.rankUpdated) {
+                        const rankChanged = <firestore.Timestamp><any>data.rankUpdated;
+                        data.rankUpdated = rankChanged.toDate();
                     }
                     return {id, ...data};
                 });

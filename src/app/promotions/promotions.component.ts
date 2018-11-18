@@ -11,14 +11,20 @@ interface PromoteMember {
     promoteTo?: Rank;
     demoteTo?: Rank;
     remove: boolean;
-    period: number;
+    hidePeriod?: number;
     member: Member;
     lastChange: Date;
+    error?: string;
 }
 
 interface Threshold {
     required: number;
     rank: Rank;
+}
+
+interface FindResult {
+    rank?: Rank;
+    error?: string;
 }
 
 @Component({
@@ -30,7 +36,6 @@ export class PromotionsComponent implements OnDestroy {
 
     members: PromoteMember[] = [];
     ranks: Rank[] = [];
-    thresholds: Threshold[] = [];
     private allMembers: Member[] = [];
     private membersSubscription: Subscription;
     private rankSubscription: Subscription;
@@ -41,7 +46,6 @@ export class PromotionsComponent implements OnDestroy {
         // - see if no days since join makes eligible for promotion from current rank
         this.rankSubscription = rankService.ranks.subscribe(ranks => {
             this.ranks = ranks;
-            this.calculateTresholds();
             if (this.allMembers.length) {
                 this.updateRanks();
                 this.members = this.filter(this.allMembers);
@@ -101,51 +105,35 @@ export class PromotionsComponent implements OnDestroy {
 
     hide(pm: PromoteMember) {
         const member = pm.member;
-        if (confirm(`Hide '${member.character}' for ${pm.period} days?`)) {
+        if (confirm(`Hide '${member.character}' for ${pm.hidePeriod} days?`)) {
             member.rankUpdated = new Date();
             this.memberService.save(member);
-        }
-    }
-
-    private calculateTresholds() {
-        let required = 0;
-        for (const rank of this.ranks) {
-            if (required > 0) {
-                this.thresholds.unshift({required, rank});
-            }
-            if (typeof rank.promoteAfter !== 'number') {
-                break;
-            }
-            required += rank.promoteAfter;
         }
     }
 
     private filter(members: Member[]): PromoteMember[] {
         const result: PromoteMember[] = [];
         const today = new Date();
-        // if promotion no longer possible show button "hide" (updates the date)
-        // demote by 1 rank if daysActive >= demoteAfter
-        // for acolyte offer option to remove from guild instead of demote
+
         for (const member of members) {
             if (member.left === true) {
                 continue;
             }
-
             const rank = member.rank;
-            let demoteTo = null;
-            let promoteTo = null;
             const lastChange = member.rankUpdated || member.joined;
             const daysActive = this.daysBetween(today, lastChange);
-            let include = false;
-            let removable = false;
-            let period = 0;
-            if (typeof rank.promoteAfter === 'number') {
-                const next = this.thresholds.find(t => t.required <= daysActive);
-                if (next && next.rank.index > rank.index) {
+            let demoteTo;
+            let promoteTo;
+            let include ;
+            let removable;
+            let hidePeriod;
+
+            const next = this.findNext(member, rank, daysActive);
+            if (next) {
+                if (next.rank) {
                     promoteTo = next.rank;
-                    include = true;
-                    period = rank.promoteAfter;
                 }
+                include = true;
             }
 
             if (typeof rank.demoteAfter === 'number') {
@@ -153,7 +141,9 @@ export class PromotionsComponent implements OnDestroy {
                     demoteTo = rank.index > 0 ? this.ranks[rank.index - 1] : null;
                     include = true;
                     removable = demoteTo === null;
-                    period = rank.demoteAfter;
+                }
+                if (!promoteTo) {
+                    hidePeriod = rank.demoteAfter;
                 }
             }
             if (include) {
@@ -161,14 +151,36 @@ export class PromotionsComponent implements OnDestroy {
                     daysActive: daysActive,
                     promoteTo: promoteTo,
                     demoteTo: demoteTo,
-                    period: period,
+                    hidePeriod: hidePeriod,
                     remove: removable,
                     member: member,
+                    error: next ? next.error : null,
                     lastChange: lastChange
                 });
             }
         }
         return result;
+    }
+
+    private findNext(member: Member, current: Rank, active: number): FindResult {
+        if (typeof current.promoteAfter !== 'number') {
+            return null;
+        }
+        if (current.promoteAfter > active) {
+            return null;
+        }
+        const index = current.index + 1;
+        if (index >= this.ranks.length) {
+            return null;
+        }
+        const next = this.ranks[index];
+        if (next.require) {
+            if (!member[next.require] || member[next.require] === '') {
+                return {error: next.require};
+            }
+        }
+        const result = this.findNext(member, next, active - current.promoteAfter);
+        return {rank: result.rank || next};
     }
 
     private daysBetween(date1: Date, date2: Date): number {
