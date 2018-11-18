@@ -49,9 +49,8 @@ export class RosterComponent implements OnInit, OnDestroy {
     private docClickSubscription: any;
     private isAdminSubscription: any;
 
-    constructor(private memberService: MemberService, private rankService: RankService,
-                private renderer: Renderer2, private userService: UserService,
-                private router: Router) {
+    constructor(private memberService: MemberService, rankService: RankService,
+                private renderer: Renderer2, userService: UserService) {
         this.isAdminSubscription = userService.isAdmin.subscribe(isAdmin => {
             if (!isAdmin) {
                 window.location.reload(true);
@@ -148,6 +147,7 @@ export class RosterComponent implements OnInit, OnDestroy {
             'website': new FormControl(dataItem.website),
             'discordId': new FormControl(dataItem.discordId),
             'rankId': new FormControl(dataItem.rankId, Validators.required),
+            'originalRankId': new FormControl(dataItem.rankId),
             'joined': new FormControl(dataItem.joined, Validators.required),
             'leftDate': new FormControl(dataItem.leftDate),
             'notes':  new FormControl(dataItem.notes)
@@ -205,7 +205,12 @@ export class RosterComponent implements OnInit, OnDestroy {
 
     private saveCurrent() {
         if (this.formGroup && this.formGroup.valid) {
-            this.memberService.save(this.formGroup.value);
+            const values = this.formGroup.value;
+            if (values.originalRankId !== values.rankId) {
+                values.rankUpdated = new Date();
+            }
+            delete values.originalRankId;
+            this.memberService.save(values);
         }
         this.closeEditor();
     }

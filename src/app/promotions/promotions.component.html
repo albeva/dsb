@@ -1,0 +1,55 @@
+<h1>Promotions</h1>
+<p>
+  Members eligible for promotions or demotions
+</p>
+<table
+    class="table table-bordered table-sm">
+    <thead>
+        <tr>
+            <th>Member</th>
+            <th>Legacy</th>
+            <th>Discord</th>
+            <th>Rank</th>
+            <th title="Days since last action">Days</th>
+            <th>Promote</th>
+            <th>Demote</th>
+            <th>Notes</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr *ngFor="let pm of members">
+            <td>{{ pm.member.character }}</td>
+            <td>{{ pm.member.legacy }}</td>
+            <td>{{ pm.member.discordId }}</td>
+            <td class="rank-label" [style.color]="pm.member.rank.color">{{ pm.member.rank.name }}</td>
+            <td title="{{ pm.lastChange | date }}">{{ pm.daysActive }}</td>
+            <td><button *ngIf="pm.promoteTo"
+                    type="button"
+                    [style.color]="pm.promoteTo.color"
+                    class="btn btn-sm btn-light"
+                    (click)="promote(pm)"
+                ><i class="fas fa-plus"></i> {{ pm.promoteTo.name }}</button>
+                <button *ngIf="!pm.promoteTo"
+                    type="button"
+                    class="btn btn-sm btn-outline-secondary"
+                    title="Hide for {{ pm.period }} days"
+                    (click)="hide(pm)"
+                ><i class="fas fa-eye-slash"></i>    Hide</button>
+            </td>
+            <td><button *ngIf="pm.demoteTo"
+                    type="button"
+                    [style.color]="pm.demoteTo.color"
+                    class="btn btn-sm btn-light"
+                    (click)="demote(pm)"
+                    title="Demote due to inactivity"
+                ><i class="fas fa-minus"></i> {{ pm.demoteTo.name }}</button>
+                <button *ngIf="pm.remove"
+                    type="button"
+                    class="btn btn-sm btn-outline-danger"
+                    title="Remove from guild due to inactivity"
+                    (click)="remove(pm)"
+                ><i class="k-icon k-i-logout"></i> Remove</button></td>
+            <td>{{ pm.member.notes }}</td>
+        </tr>
+    </tbody>
+</table>

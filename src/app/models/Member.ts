@@ -10,6 +10,9 @@ export interface Member {
     // has left the guild?
     left: boolean;
 
+    // date of the last rank change
+    rankUpdated?: Date;
+
     // Approximate date when member left the guild
     leftDate?: Date;
 

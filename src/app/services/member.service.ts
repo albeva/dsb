@@ -27,6 +27,10 @@ export class MemberService {
                         const leftDate = <firestore.Timestamp><any>data.leftDate;
                         data.leftDate = leftDate.toDate();
                     }
+                    if (data.rankChanged) {
+                        const rankChanged = <firestore.Timestamp><any>data.rankChanged;
+                        data.rankChanged = rankChanged.toDate();
+                    }
                     return {id, ...data};
                 });
                 return members.sort((a, b) => {
@@ -43,6 +47,9 @@ export class MemberService {
         copy.joined = firestore.Timestamp.fromDate(copy.joined);
         if (copy.leftDate) {
             copy.leftDate = firestore.Timestamp.fromDate(copy.leftDate);
+        }
+        if (copy.rankChanged) {
+            copy.rankChanged = firestore.Timestamp.fromDate(copy.rankChanged);
         }
         delete copy.id;
         delete copy.rank;

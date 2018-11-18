@@ -30,6 +30,8 @@ import { AppRoutingModule } from './app-routing.module';
 import { AccessDeniedComponent } from './access-denied/access-denied.component';
 import { MessageComponent } from './message/message.component';
 import { MessageListComponent } from './message-list/message-list.component';
+import { PromotionsComponent } from './promotions/promotions.component';
+
 // App utilties
 import { AuthGuard } from './guards/auth.guard';
 
@@ -41,7 +43,8 @@ import { AuthGuard } from './guards/auth.guard';
         LoginComponent,
         AccessDeniedComponent,
         MessageComponent,
-        MessageListComponent
+        MessageListComponent,
+        PromotionsComponent
     ],
     imports: [
         // angular
