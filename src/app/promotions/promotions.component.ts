@@ -129,10 +129,10 @@ export class PromotionsComponent implements OnDestroy {
             let hidePeriod;
 
             const next = this.findNext(member, rank, daysActive);
-            if (next) {
-                if (next.rank) {
-                    promoteTo = next.rank;
-                }
+            if (next.rank) {
+                promoteTo = next.rank;
+                include = true;
+            } else if (next.error) {
                 include = true;
             }
 
@@ -164,14 +164,14 @@ export class PromotionsComponent implements OnDestroy {
 
     private findNext(member: Member, current: Rank, active: number): FindResult {
         if (typeof current.promoteAfter !== 'number') {
-            return null;
+            return {};
         }
         if (current.promoteAfter > active) {
-            return null;
+            return {};
         }
         const index = current.index + 1;
         if (index >= this.ranks.length) {
-            return null;
+            return {};
         }
         const next = this.ranks[index];
         if (next.require) {
